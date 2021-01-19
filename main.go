@@ -14,6 +14,7 @@ import (
 var (
 	styleBox            lvgl.LVStyle
 	scr, tv, t1, t2, t3 *lvgl.LVObj
+	lbl1, lbl2, lbl3    *lvgl.LVObj
 )
 
 func init() {
@@ -84,7 +85,7 @@ func createScreen() {
 		log.Fatal(err)
 	}
 
-	lbl1, err := lvgl.Label(t1, nil)
+	lbl1, err = lvgl.Label(t1, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -93,7 +94,7 @@ func createScreen() {
 		log.Fatal(err)
 	}
 
-	lbl2, err := lvgl.Label(t2, nil)
+	lbl2, err = lvgl.Label(t2, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -101,7 +102,7 @@ func createScreen() {
 		log.Fatal(err)
 	}
 
-	lbl3, err := lvgl.Label(t3, nil)
+	lbl3, err = lvgl.Label(t3, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
