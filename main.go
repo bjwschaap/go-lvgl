@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	styleBox       lvgl.LVStyle
-	tv, t1, t2, t3 *lvgl.LVObj
+	styleBox            lvgl.LVStyle
+	scr, tv, t1, t2, t3 *lvgl.LVObj
 )
 
 func init() {
@@ -59,7 +59,9 @@ func main() {
 
 // createScreen assembles the GUI through LVGL API
 func createScreen() {
-	scr, err := lvgl.GetActiveScreen()
+	var err error
+
+	scr, err = lvgl.GetActiveScreen()
 	if err != nil {
 		log.Fatal(err)
 	}
