@@ -55,3 +55,5 @@ nothing:
 
 clean:
 	rm -f $(OBJS)
+	rm -f $(BIN)
+	rm -f $(ABIN)
