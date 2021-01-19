@@ -2,8 +2,6 @@ package lvgl
 
 /*
   #cgo CFLAGS: -I../include -I../include/lvgl -I../include/lv_drivers/display -I../include/lv_drivers/indev
-  #include "lv_conf.h"
-  #include "lv_drv_conf.h"
   #include "lvgl.h"
   #include "fbdev.h"
   #include "evdev.h"
@@ -17,7 +15,16 @@ package lvgl
   static lv_color_t lvbuf1[LV_BUF_SIZE];
   static lv_color_t lvbuf2[LV_BUF_SIZE];
 
-  void disp_init(){
+  void init(){
+	// LVGL init
+	lv_init();
+
+	// Linux framebuffer device init
+	fbdev_init();
+
+	// Touch pointer device init
+	evdev_init();
+
 	// Initialize display device
 	lv_disp_buf_init(&disp_buf, lvbuf1, lvbuf2, LV_BUF_SIZE);
 	lv_disp_drv_t disp_drv;
@@ -42,10 +49,7 @@ import (
 )
 
 func init() {
-	C.lv_init()
-	C.fbdev_init()
-	C.evdev_init()
-	C.disp_init()
+	C.init()
 }
 
 // TickInc ...
@@ -60,10 +64,10 @@ func TaskHandler() {
 
 // StartTaskHandler starts a go routine that
 // increments the ticks, and periodically
-// calls the taskhandler
+// calls the taskhandler (tickless mode)
 func StartTaskHandler(ctx context.Context) {
 	// start a timer that ticks every second
-	ticker := time.NewTicker(1 * time.Second)
+	ticker := time.NewTicker(5 * time.Second)
 
 	// start the Go routine
 	go func() {
@@ -72,7 +76,7 @@ func StartTaskHandler(ctx context.Context) {
 			case <-ctx.Done():
 				return
 			case <-ticker.C:
-				TickInc(1)
+				TickInc(5)
 				TaskHandler()
 			}
 		}
