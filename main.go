@@ -12,7 +12,8 @@ import (
 )
 
 var (
-	styleBox lvgl.LVStyle
+	styleBox       lvgl.LVStyle
+	tv, t1, t2, t3 *lvgl.LVObj
 )
 
 func init() {
@@ -63,20 +64,20 @@ func createScreen() {
 		log.Fatal(err)
 	}
 
-	tv, err := lvgl.TabviewCreate(scr, nil)
+	tv, err = lvgl.TabviewCreate(scr, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	t1, err := tv.AddTab("Controls")
+	t1, err = tv.AddTab("Controls")
 	if err != nil {
 		log.Fatal(err)
 	}
-	t2, err := tv.AddTab("Visuals")
+	t2, err = tv.AddTab("Visuals")
 	if err != nil {
 		log.Fatal(err)
 	}
-	t3, err := tv.AddTab("Selectors")
+	t3, err = tv.AddTab("Selectors")
 	if err != nil {
 		log.Fatal(err)
 	}
