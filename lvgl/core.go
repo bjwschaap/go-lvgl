@@ -16,9 +16,19 @@ package lvgl
 import "C"
 import "unsafe"
 
+const (
+	DisplaySizeSmall      uint8 = C.LV_DISP_SIZE_SMALL
+	DisplaySizeMedium     uint8 = C.LV_DISP_SIZE_MEDIUM
+	DisplaySizeLarge      uint8 = C.LV_DISP_SIZE_LARGE
+	DisplaySizeExtraLarge uint8 = C.LV_DISP_SIZE_EXTRA_LARGE
+)
+
 // LVObj is the base object that implements the basic
 // properties of widgets on a screen.
 type LVObj C.struct__lv_obj_t
+
+// LVDisplay is the display type
+type LVDisplay C.struct__disp_t
 
 // GetChild helps to iterate through the children of an object
 func GetChild(obj, child *LVObj) (*LVObj, error) {
@@ -39,9 +49,17 @@ func GetChild(obj, child *LVObj) (*LVObj, error) {
 }
 
 // Align ...
-func (obj *LVObj) Align(base *LVObj, align C.uchar, x int, y int) error {
-	var ba *C.struct__lv_obj_t
-	ba = (*C.struct__lv_obj_t)(unsafe.Pointer(base))
-	_, err := C.lv_obj_align((*C.struct__lv_obj_t)(unsafe.Pointer(obj)), ba, align, C.short(x), C.short(y))
+func (obj *LVObj) Align(base *LVObj, align uint8, x int, y int) error {
+	ba := (*C.struct__lv_obj_t)(unsafe.Pointer(base))
+	_, err := C.lv_obj_align((*C.struct__lv_obj_t)(unsafe.Pointer(obj)), ba, C.uchar(align), C.short(x), C.short(y))
 	return err
+}
+
+// GetDisplaySizeCategory returns the size category of the display based on it's hor. res. and dpi.
+// @param disp pointer to a display (NULL to use the default display)
+// @return DisplaySizeSmall/DisplaySizeMedium/DisplaySizeLarge/DisplaySizeExtraLarge
+func GetDisplaySizeCategory(disp *LVDisplay) (uint8, error) {
+	d := (*C.struct__disp_t)(unsafe.Pointer(disp))
+	cat, err := C.lv_disp_get_size_category(d)
+	return uint8(cat), err
 }

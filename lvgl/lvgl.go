@@ -36,6 +36,10 @@ package lvgl
 
 */
 import "C"
+import (
+	"context"
+	"time"
+)
 
 func init() {
 	C.lv_init()
@@ -52,4 +56,25 @@ func TickInc(tick int) {
 // TaskHandler ...
 func TaskHandler() {
 	C.lv_task_handler()
+}
+
+// StartTaskHandler starts a go routine that
+// increments the ticks, and periodically
+// calls the taskhandler
+func StartTaskHandler(ctx context.Context) {
+	// start a timer that ticks every second
+	ticker := time.NewTicker(1 * time.Second)
+
+	// start the Go routine
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+				TickInc(1)
+				TaskHandler()
+			}
+		}
+	}()
 }
