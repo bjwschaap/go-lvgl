@@ -8,6 +8,8 @@ package lvgl
 
   #cgo LDFLAGS: -L../include -llvgl
   #include <stdlib.h>
+  #include <unistd.h>
+  #include <stddef.h>
 
   #define LV_BUF_SIZE 384000
 
@@ -41,6 +43,11 @@ package lvgl
 	lv_indev_drv_register(&indev_drv);
   }
 
+  void handle_tick(uint32_t t) {
+	lv_tick_inc(t);
+	lv_task_handler();
+  }
+
 */
 import "C"
 import (
@@ -50,16 +57,6 @@ import (
 
 func init() {
 	C.init()
-}
-
-// TickInc ...
-func TickInc(tick int) {
-	C.lv_tick_inc(C.uint(tick))
-}
-
-// TaskHandler ...
-func TaskHandler() {
-	C.lv_task_handler()
 }
 
 // StartTaskHandler starts a go routine that
@@ -76,8 +73,7 @@ func StartTaskHandler(ctx context.Context) {
 			case <-ctx.Done():
 				return
 			case <-ticker.C:
-				TickInc(5)
-				TaskHandler()
+				C.handle_tick(C.uint32_t(5))
 			}
 		}
 	}()
