@@ -12,9 +12,10 @@ import (
 )
 
 var (
-	style               lvgl.LVStyle
-	scr, tv, t1, t2, t3 *lvgl.LVObj
-	lbl1, lbl2, lbl3    *lvgl.LVObj
+	style lvgl.LVStyle
+	scr   *lvgl.LVObj
+	// tv, t1, t2, t3 *lvgl.LVObj
+	// lbl1, lbl2, lbl3    *lvgl.LVObj
 )
 
 func init() {
@@ -74,19 +75,19 @@ func createScreen() {
 	scr.AddStyle(lvgl.ObjMaskPartMain, &style)
 
 	// Make a tabview bar
-	tv = scr.Tabview(nil)
+	tv := scr.Tabview(nil)
 
 	// Add 3 tabs (+pages) to the tabview
-	t1 = tv.AddTab("Controls")
-	t2 = tv.AddTab("Visuals")
-	t3 = tv.AddTab("Selectors")
+	t1 := tv.AddTab("Controls")
+	t2 := tv.AddTab("Visuals")
+	t3 := tv.AddTab("Selectors")
 
 	// Add some labels to the tab pages
-	lbl1 = lvgl.Label(t1, nil)
+	lbl1 := lvgl.Label(t1, nil)
 	lbl1.SetText("This is tab 1")
-	lbl2 = lvgl.Label(t2, nil)
+	lbl2 := lvgl.Label(t2, nil)
 	lbl2.SetText("This is tab 2")
-	lbl3 = lvgl.Label(t3, nil)
+	lbl3 := lvgl.Label(t3, nil)
 	lbl3.SetText("This is tab 3")
 
 }
