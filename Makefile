@@ -15,9 +15,14 @@ init:
 	mkdir -p include/obj/lvgl/lv_drivers/display
 	mkdir -p include/obj/lvgl/lv_drivers/gtkdrv
 	mkdir -p include/obj/lvgl/lv_drivers/indev
-	cd include/lvgl; ln -s ../lv_drivers lv_drivers
+	ln -s -f ../lv_drivers include/lvgl
 
 lvgl:
 	$(MAKE) -C include all
 
-.PHONY: build clean init lvgl
+clean-lvgl:
+	$(MAKE) -C include clean
+
+clean-all: clean clean-lvgl
+
+.PHONY: build clean init lvgl clean-lvgl clean-all
