@@ -21,5 +21,4 @@ vendor/
 obj/
 
 # compiled SO and .a
-include/liblgvgl.so
-include/liblgvgl.a
+include/liblgvgl.*
