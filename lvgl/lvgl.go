@@ -52,6 +52,7 @@ package lvgl
 import "C"
 import (
 	"context"
+	"fmt"
 	"time"
 )
 
@@ -73,6 +74,7 @@ func StartTaskHandler(ctx context.Context) {
 			case <-ctx.Done():
 				return
 			case <-ticker.C:
+				fmt.Println("go-lvgl tick!")
 				C.handle_tick(C.uint32_t(5))
 			}
 		}
