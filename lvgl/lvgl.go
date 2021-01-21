@@ -52,7 +52,6 @@ package lvgl
 import "C"
 import (
 	"context"
-	"fmt"
 	"time"
 )
 
@@ -65,7 +64,7 @@ func init() {
 // calls the taskhandler (tickless mode)
 func StartTaskHandler(ctx context.Context) {
 	// start a timer that ticks every second
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(5000 * time.Microsecond)
 
 	// start the Go routine
 	go func() {
@@ -74,7 +73,6 @@ func StartTaskHandler(ctx context.Context) {
 			case <-ctx.Done():
 				return
 			case <-ticker.C:
-				fmt.Println("go-lvgl tick!")
 				C.handle_tick(C.uint32_t(5))
 			}
 		}
