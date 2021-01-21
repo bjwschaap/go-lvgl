@@ -85,7 +85,6 @@ func StartTaskHandler(ctx context.Context) {
 }
 
 // RefreshNow forces lvgl to refresh/flush the (default) display
-func RefreshNow() error {
-	_, err := C.refresh_now()
-	return err
+func RefreshNow() {
+	C.refresh_now()
 }

@@ -53,8 +53,8 @@ func main() {
 	}
 
 	// Clear the display
-	_ = scr.Clean()
-	_ = lvgl.RefreshNow()
+	scr.Clean()
+	lvgl.RefreshNow()
 
 	// Give goroutines some time to cleanup/finish
 	time.Sleep(1 * time.Second)
@@ -64,25 +64,29 @@ func main() {
 }
 
 // createScreen assembles the GUI through LVGL API
-// errors are ignored for readability
 func createScreen() {
+
+	// Make a Black active screen. so when we clear it
+	// it will be a 'blank' screen
 	style.Init()
 	style.SetBgColor(lvgl.StateDefault, lvgl.ColorBlack)
-
-	scr, _ = lvgl.GetActiveScreen()
+	scr = lvgl.GetActiveScreen()
 	scr.AddStyle(lvgl.ObjMaskPartMain, &style)
 
-	tv, _ = lvgl.TabviewCreate(scr, nil)
+	// Make a tabview bar
+	tv = scr.Tabview(nil)
 
-	t1, _ = tv.AddTab("Controls")
-	t2, _ = tv.AddTab("Visuals")
-	t3, _ = tv.AddTab("Selectors")
+	// Add 3 tabs (+pages) to the tabview
+	t1 = tv.AddTab("Controls")
+	t2 = tv.AddTab("Visuals")
+	t3 = tv.AddTab("Selectors")
 
-	lbl1, _ = lvgl.Label(t1, nil)
+	// Add some labels to the tab pages
+	lbl1 = lvgl.Label(t1, nil)
 	lbl1.SetText("This is tab 1")
-	lbl2, _ = lvgl.Label(t2, nil)
+	lbl2 = lvgl.Label(t2, nil)
 	lbl2.SetText("This is tab 2")
-	lbl3, _ = lvgl.Label(t3, nil)
+	lbl3 = lvgl.Label(t3, nil)
 	lbl3.SetText("This is tab 3")
 
 }

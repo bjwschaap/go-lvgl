@@ -41,7 +41,7 @@ type LVObj C.struct__lv_obj_t
 type LVDisplay C.struct__disp_t
 
 // GetChild helps to iterate through the children of an object
-func GetChild(obj, child *LVObj) (*LVObj, error) {
+func GetChild(obj, child *LVObj) *LVObj {
 	var p1, p2 *C.struct__lv_obj_t
 	p1 = (*C.struct__lv_obj_t)(unsafe.Pointer(obj))
 	if child != nil {
@@ -50,32 +50,26 @@ func GetChild(obj, child *LVObj) (*LVObj, error) {
 		p2 = nil
 	}
 
-	lvobj, err := C.lv_obj_get_child(p1, p2)
-	if err != nil {
-		return nil, err
-	}
-
-	return (*LVObj)(unsafe.Pointer(lvobj)), nil
+	lvobj := C.lv_obj_get_child(p1, p2)
+	return (*LVObj)(unsafe.Pointer(lvobj))
 }
 
 // Align ...
-func (obj *LVObj) Align(base *LVObj, align uint8, x int, y int) error {
+func (obj *LVObj) Align(base *LVObj, align uint8, x int, y int) {
 	ba := (*C.struct__lv_obj_t)(unsafe.Pointer(base))
-	_, err := C.lv_obj_align((*C.struct__lv_obj_t)(unsafe.Pointer(obj)), ba, C.uchar(align), C.short(x), C.short(y))
-	return err
+	C.lv_obj_align((*C.struct__lv_obj_t)(unsafe.Pointer(obj)), ba, C.uchar(align), C.short(x), C.short(y))
 }
 
 // GetDisplaySizeCategory returns the size category of the display based on it's hor. res. and dpi.
 // @param disp pointer to a display (NULL to use the default display)
 // @return DisplaySizeSmall/DisplaySizeMedium/DisplaySizeLarge/DisplaySizeExtraLarge
-func GetDisplaySizeCategory(disp *LVDisplay) (uint8, error) {
+func GetDisplaySizeCategory(disp *LVDisplay) uint8 {
 	d := (*C.struct__disp_t)(unsafe.Pointer(disp))
-	cat, err := C.lv_disp_get_size_category(d)
-	return uint8(cat), err
+	cat := C.lv_disp_get_size_category(d)
+	return uint8(cat)
 }
 
 // Clean resets/clears an lv_obj back to init state
-func (obj *LVObj) Clean() error {
-	_, err := C.lv_obj_clean((*C.struct__lv_obj_t)(unsafe.Pointer(obj)))
-	return err
+func (obj *LVObj) Clean() {
+	C.lv_obj_clean((*C.struct__lv_obj_t)(unsafe.Pointer(obj)))
 }

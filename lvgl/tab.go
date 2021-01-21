@@ -13,36 +13,27 @@ package lvgl
 */
 import "C"
 import (
-	"errors"
 	"unsafe"
 )
 
-// TabviewCreate creates a new tabview
-// @param scr is the screen to put the label on
+// Tabview creates a new tabview on a screen
 // @param copy is another label to copy the styling from
 // @return the created tabview object
-func TabviewCreate(scr, copy *LVObj) (*LVObj, error) {
-	if scr == nil {
-		return nil, errors.New("screen can't be nil")
-	}
-	p1 := (*C.struct__lv_obj_t)(unsafe.Pointer(scr))
+func (obj *LVObj) Tabview(copy *LVObj) *LVObj {
+	p1 := (*C.struct__lv_obj_t)(unsafe.Pointer(obj))
 	p2 := (*C.struct__lv_obj_t)(unsafe.Pointer(copy))
 
-	label, err := C.lv_tabview_create(p1, p2)
-	if err != nil {
-		return nil, err
-	}
-
-	return (*LVObj)(unsafe.Pointer(label)), nil
+	label := C.lv_tabview_create(p1, p2)
+	return (*LVObj)(unsafe.Pointer(label))
 }
 
 // AddTab adds a new tab with the given name to the tabview
 // @param tabview pointer to Tab view object where to ass the new tab
 // @param name the text on the tab button
 // @return pointer to the created page object (lv_page). You can create your content here
-func (tv *LVObj) AddTab(name string) (*LVObj, error) {
+func (obj *LVObj) AddTab(name string) *LVObj {
 	n := C.CString(name)
 	defer C.free((unsafe.Pointer)(n))
-	page, err := C.lv_tabview_add_tab((*C.struct__lv_obj_t)(unsafe.Pointer(tv)), n)
-	return (*LVObj)(unsafe.Pointer(page)), err
+	page := C.lv_tabview_add_tab((*C.struct__lv_obj_t)(unsafe.Pointer(obj)), n)
+	return (*LVObj)(unsafe.Pointer(page))
 }

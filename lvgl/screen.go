@@ -13,42 +13,22 @@ package lvgl
 import "C"
 
 import (
-	"errors"
 	"unsafe"
 )
 
 // GetActiveScreen returns the active screen object
-func GetActiveScreen() (*LVObj, error) {
-	scr, err := C.lv_scr_act()
-	if err != nil {
-		return nil, err
-	}
-
-	return (*LVObj)(unsafe.Pointer(scr)), nil
+func GetActiveScreen() *LVObj {
+	scr := C.lv_scr_act()
+	return (*LVObj)(unsafe.Pointer(scr))
 }
 
 // LoadScreen loads an LVObject as screen
-func LoadScreen(scr *LVObj) error {
-	if scr == nil {
-		return errors.New("scr can't be nil")
-	}
-
-	p1 := (*C.struct__lv_obj_t)(unsafe.Pointer(scr))
-	_, err := C.lv_scr_load(p1)
-	return err
+func LoadScreen(scr *LVObj) {
+	C.lv_scr_load((*C.struct__lv_obj_t)(unsafe.Pointer(scr)))
 }
 
 // GetScreen returns the screen for an object
-func GetScreen(obj *LVObj) (*LVObj, error) {
-	if obj == nil {
-		return nil, errors.New("obj can't be nil")
-	}
-
-	p1 := (*C.struct__lv_obj_t)(unsafe.Pointer(obj))
-	scr, err := C.lv_obj_get_screen(p1)
-	if err != nil {
-		return nil, err
-	}
-
-	return (*LVObj)(unsafe.Pointer(scr)), nil
+func (obj *LVObj) GetScreen() *LVObj {
+	scr := C.lv_obj_get_screen((*C.struct__lv_obj_t)(unsafe.Pointer(obj)))
+	return (*LVObj)(unsafe.Pointer(scr))
 }

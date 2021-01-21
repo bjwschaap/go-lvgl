@@ -13,7 +13,6 @@ package lvgl
 */
 import "C"
 import (
-	"errors"
 	"unsafe"
 )
 
@@ -21,25 +20,17 @@ import (
 // @param scr is the screen to put the label on
 // @param copy is another label to copy the styling from
 // @return the created label object
-func Label(scr, copy *LVObj) (*LVObj, error) {
-	if scr == nil {
-		return nil, errors.New("screen can't be nil")
-	}
+func Label(scr, copy *LVObj) *LVObj {
 	p1 := (*C.struct__lv_obj_t)(unsafe.Pointer(scr))
 	p2 := (*C.struct__lv_obj_t)(unsafe.Pointer(copy))
 
-	label, err := C.lv_label_create(p1, p2)
-	if err != nil {
-		return nil, err
-	}
-
-	return (*LVObj)(unsafe.Pointer(label)), nil
+	label := C.lv_label_create(p1, p2)
+	return (*LVObj)(unsafe.Pointer(label))
 }
 
 // SetText ...
-func (obj *LVObj) SetText(str string) error {
+func (obj *LVObj) SetText(str string) {
 	txt := C.CString(str)
 	defer C.free(unsafe.Pointer(txt))
-	_, err := C.lv_label_set_text((*C.struct__lv_obj_t)(unsafe.Pointer(obj)), txt)
-	return err
+	C.lv_label_set_text((*C.struct__lv_obj_t)(unsafe.Pointer(obj)), txt)
 }
