@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	styleBox            lvgl.LVStyle
+	style               lvgl.LVStyle
 	scr, tv, t1, t2, t3 *lvgl.LVObj
 	lbl1, lbl2, lbl3    *lvgl.LVObj
 )
@@ -64,55 +64,25 @@ func main() {
 }
 
 // createScreen assembles the GUI through LVGL API
+// errors are ignored for readability
 func createScreen() {
-	var err error
+	style.Init()
+	style.SetBgColor(lvgl.StateDefault, lvgl.ColorBlack)
 
-	scr, err = lvgl.GetActiveScreen()
-	if err != nil {
-		log.Fatal(err)
-	}
+	scr, _ = lvgl.GetActiveScreen()
+	scr.AddStyle(lvgl.ObjMaskPartMain, &style)
 
-	tv, err = lvgl.TabviewCreate(scr, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	tv, _ = lvgl.TabviewCreate(scr, nil)
 
-	t1, err = tv.AddTab("Controls")
-	if err != nil {
-		log.Fatal(err)
-	}
-	t2, err = tv.AddTab("Visuals")
-	if err != nil {
-		log.Fatal(err)
-	}
-	t3, err = tv.AddTab("Selectors")
-	if err != nil {
-		log.Fatal(err)
-	}
+	t1, _ = tv.AddTab("Controls")
+	t2, _ = tv.AddTab("Visuals")
+	t3, _ = tv.AddTab("Selectors")
 
-	lbl1, err = lvgl.Label(t1, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	lbl1, _ = lvgl.Label(t1, nil)
+	lbl1.SetText("This is tab 1")
+	lbl2, _ = lvgl.Label(t2, nil)
+	lbl2.SetText("This is tab 2")
+	lbl3, _ = lvgl.Label(t3, nil)
+	lbl3.SetText("This is tab 3")
 
-	if err = lbl1.SetText("This is tab 1"); err != nil {
-		log.Fatal(err)
-	}
-
-	lbl2, err = lvgl.Label(t2, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err = lbl2.SetText("This is tab 2"); err != nil {
-		log.Fatal(err)
-	}
-
-	lbl3, err = lvgl.Label(t3, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if err = lbl3.SetText("This is tab 3"); err != nil {
-		log.Fatal(err)
-	}
 }

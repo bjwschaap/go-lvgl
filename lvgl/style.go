@@ -17,28 +17,37 @@ import "unsafe"
 // LVStyle contains an object's styling information
 type LVStyle C.struct__lv_style_t
 
-// StyleInit initializes a new lv_style_t object
-func StyleInit(style *LVStyle) error {
-	s := (*C.struct___6)(unsafe.Pointer(style))
-	_, err := C.lv_style_init(s)
-	return err
+// Init initializes a new lv_style_t object
+func (style *LVStyle) Init() {
+	s := (*C.struct___7)(unsafe.Pointer(style))
+	C.lv_style_init(s)
 }
 
 // Copy copies a style to a destination style
 // @param dest The destination style
 // @return error
-func (style *LVStyle) Copy(dest *LVStyle) error {
-	s := (*C.struct___6)(unsafe.Pointer(style))
-	d := (*C.struct___6)(unsafe.Pointer(dest))
-	_, err := C.lv_style_copy(d, s)
-	return err
+func (style *LVStyle) Copy(dest *LVStyle) {
+	s := (*C.struct___7)(unsafe.Pointer(style))
+	d := (*C.struct___7)(unsafe.Pointer(dest))
+	C.lv_style_copy(d, s)
 }
 
 // Reset clears all properties from a style and all allocated memories
 // @param dest The destination style
 // @return error
-func (style *LVStyle) Reset() error {
-	s := (*C.struct___6)(unsafe.Pointer(style))
-	_, err := C.lv_style_reset(s)
-	return err
+func (style *LVStyle) Reset() {
+	s := (*C.struct___7)(unsafe.Pointer(style))
+	C.lv_style_reset(s)
+}
+
+// SetBgColor sets the backgroundcolor property on a style, for a specific state
+func (style *LVStyle) SetBgColor(state uint8, color LVColor) {
+	s := (*C.struct___7)(unsafe.Pointer(style))
+	C.lv_style_set_bg_color(s, C.uchar(state), C.lv_color_t(color))
+}
+
+// AddStyle adds a style to a LVObj
+func (obj *LVObj) AddStyle(part uint8, style *LVStyle) {
+	s := (*C.struct___7)(unsafe.Pointer(style))
+	C.lv_obj_add_style((*C.struct__lv_obj_t)(unsafe.Pointer(obj)), C.uchar(part), s)
 }

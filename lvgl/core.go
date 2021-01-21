@@ -21,6 +21,16 @@ const (
 	DisplaySizeMedium     uint8 = C.LV_DISP_SIZE_MEDIUM
 	DisplaySizeLarge      uint8 = C.LV_DISP_SIZE_LARGE
 	DisplaySizeExtraLarge uint8 = C.LV_DISP_SIZE_EXTRA_LARGE
+
+	StateDefault  uint8 = C.LV_STATE_DEFAULT
+	StateChecked  uint8 = C.LV_STATE_CHECKED
+	StateFocused  uint8 = C.LV_STATE_FOCUSED
+	StateEdited   uint8 = C.LV_STATE_EDITED
+	StateHovered  uint8 = C.LV_STATE_HOVERED
+	StatePressed  uint8 = C.LV_STATE_PRESSED
+	StateDisabled uint8 = C.LV_STATE_DISABLED
+
+	ObjMaskPartMain uint8 = C.LV_OBJMASK_PART_MAIN
 )
 
 // LVObj is the base object that implements the basic
