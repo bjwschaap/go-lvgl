@@ -19,3 +19,7 @@ vendor/
 
 # Compiled .o files
 obj/
+
+# compiled SO and .a
+include/liblgvgl.so
+include/liblgvgl.a
