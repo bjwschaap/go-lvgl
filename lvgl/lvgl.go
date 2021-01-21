@@ -13,6 +13,7 @@ package lvgl
 
   #define LV_BUF_SIZE 384000
 
+  static lv_disp_t * disp;
   static lv_disp_buf_t disp_buf;
   static lv_color_t lvbuf1[LV_BUF_SIZE];
   static lv_color_t lvbuf2[LV_BUF_SIZE];
@@ -33,7 +34,7 @@ package lvgl
     lv_disp_drv_init(&disp_drv);
 	disp_drv.flush_cb = fbdev_flush;
 	disp_drv.buffer = &disp_buf;
-	lv_disp_drv_register(&disp_drv);
+	disp = lv_disp_drv_register(&disp_drv);
 
 	// Initialize pointer device
 	lv_indev_drv_t indev_drv;
@@ -46,6 +47,10 @@ package lvgl
   void handle_tick(uint32_t t) {
 	lv_tick_inc(t);
 	lv_task_handler();
+  }
+
+  void refresh_now(void) {
+	  lv_refr_now(disp);
   }
 
 */
@@ -77,4 +82,10 @@ func StartTaskHandler(ctx context.Context) {
 			}
 		}
 	}()
+}
+
+// RefreshNow forces lvgl to refresh/flush the (default) display
+func RefreshNow() error {
+	_, err := C.refresh_now()
+	return err
 }

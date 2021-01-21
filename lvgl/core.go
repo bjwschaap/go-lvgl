@@ -64,7 +64,7 @@ func GetDisplaySizeCategory(disp *LVDisplay) (uint8, error) {
 	return uint8(cat), err
 }
 
-// Clean ...
+// Clean resets/clears an lv_obj back to init state
 func (obj *LVObj) Clean() error {
 	_, err := C.lv_obj_clean((*C.struct__lv_obj_t)(unsafe.Pointer(obj)))
 	return err

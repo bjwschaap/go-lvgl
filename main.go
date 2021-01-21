@@ -53,10 +53,8 @@ func main() {
 	}
 
 	// Clear the display
-	err := scr.Clean()
-	if err != nil {
-		log.Fatal(err)
-	}
+	_ = scr.Clean()
+	_ = lvgl.RefreshNow()
 
 	// Give goroutines some time to cleanup/finish
 	time.Sleep(1 * time.Second)
