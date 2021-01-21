@@ -52,14 +52,14 @@ func main() {
 		cancel()
 	}
 
-	// Give goroutines some time to cleanup/finish
-	time.Sleep(2 * time.Second)
-
 	// Clear the display
 	err := scr.Clean()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Give goroutines some time to cleanup/finish
+	time.Sleep(1 * time.Second)
 
 	log.Info("exit")
 	os.Exit(0)
