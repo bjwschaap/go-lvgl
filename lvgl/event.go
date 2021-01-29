@@ -114,7 +114,7 @@ func MyCallback(obj *LVObj, event LVEvent) {
 // TryCallback is a test function
 func (obj *LVObj) TryCallback() {
 	i := register(MyCallback)
-	obj.SetUserData(pointer.Save((unsafe.Pointer)(&EventUserData{idx: i})))
+	obj.SetUserData(pointer.Save(&EventUserData{idx: i}))
 	C._register_callback(((*C.struct__lv_obj_t)(unsafe.Pointer(obj))))
 	unregister(i)
 }
