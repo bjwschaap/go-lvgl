@@ -102,9 +102,12 @@ func unregister(i int) {
 func go_event_callback(obj *C.struct__lv_obj_t, event C.lv_event_t) {
 	o := (*LVObj)(obj)
 	eud := pointer.Restore(unsafe.Pointer(o.UserData())).(*EventUserData)
-	fmt.Printf("IDX Restore: %d\n", eud.IDX)
 	fn := lookup(eud.IDX)
-	fn(o, (LVEvent)(event))
+	if fn == nil {
+		fmt.Printf("fn == nil!!!")
+	}
+	fmt.Printf("event: %v\n", event)
+	//fn(o, (LVEvent)(event))
 }
 
 // MyCallback is a test callback function
@@ -115,7 +118,6 @@ func MyCallback(obj *LVObj, event LVEvent) {
 // TryCallback is a test function
 func (obj *LVObj) TryCallback() {
 	i := register(MyCallback)
-	fmt.Printf("IDX Save: %d\n", i)
 	obj.SetUserData(pointer.Save(&EventUserData{IDX: i}))
 	C._register_callback(((*C.struct__lv_obj_t)(unsafe.Pointer(obj))))
 	unregister(i)
