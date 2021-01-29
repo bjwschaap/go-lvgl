@@ -70,39 +70,41 @@ type EventCallbackFn func(*LVObj, LVEvent)
 type LVEvent C.lv_event_t
 
 // EventFnRegister contains a map of all event callbacks
-type EventFnRegister struct {
-	mu    sync.Mutex
+type eventFnRegister struct {
+	sync.Mutex
 	index int
 	fns   map[int]EventCallbackFn
 }
 
-var callbackRegister EventFnRegister
+var (
+	callbackRegister eventFnRegister
+)
 
 func init() {
 	callbackRegister.fns = make(map[int]EventCallbackFn)
 }
 
-func register(fn EventCallbackFn) int {
-	callbackRegister.mu.Lock()
-	defer callbackRegister.mu.Unlock()
-	callbackRegister.index++
-	for callbackRegister.fns[callbackRegister.index] != nil {
-		callbackRegister.index++
+func (r eventFnRegister) register(fn EventCallbackFn) int {
+	r.Lock()
+	defer r.Unlock()
+	r.index++
+	for r.fns[callbackRegister.index] != nil {
+		r.index++
 	}
-	callbackRegister.fns[callbackRegister.index] = fn
-	return callbackRegister.index
+	r.fns[callbackRegister.index] = fn
+	return r.index
 }
 
-func lookup(i int) EventCallbackFn {
-	callbackRegister.mu.Lock()
-	defer callbackRegister.mu.Unlock()
-	return callbackRegister.fns[i]
+func (r eventFnRegister) lookup(i int) EventCallbackFn {
+	r.Lock()
+	defer r.Unlock()
+	return r.fns[i]
 }
 
-func unregister(i int) {
-	callbackRegister.mu.Lock()
-	defer callbackRegister.mu.Unlock()
-	delete(callbackRegister.fns, i)
+func (r eventFnRegister) unregister(i int) {
+	r.Lock()
+	defer r.Unlock()
+	delete(r.fns, i)
 }
 
 //export go_event_callback
@@ -110,7 +112,7 @@ func go_event_callback(obj *C.struct__lv_obj_t, event C.lv_event_t) {
 	fmt.Printf("fns: %v+\n", callbackRegister.fns)
 	o := (*LVObj)(obj)
 	eud := pointer.Restore(unsafe.Pointer(o.UserData())).(*EventUserData)
-	fn := lookup(eud.IDX)
+	fn := callbackRegister.lookup(eud.IDX)
 	if fn == nil {
 		fmt.Printf("Error: fn == nil!!!\n")
 		return
@@ -125,9 +127,7 @@ func MyCallback(obj *LVObj, event LVEvent) {
 
 // TryCallback is a test function
 func (obj *LVObj) TryCallback() {
-	i := register(MyCallback)
-	fmt.Printf("fns: %v+\n", callbackRegister.fns)
+	i := callbackRegister.register(MyCallback)
 	obj.SetUserData(pointer.Save(&EventUserData{IDX: i}))
 	C._register_callback(((*C.struct__lv_obj_t)(unsafe.Pointer(obj))))
-	unregister(i)
 }
