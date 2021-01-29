@@ -101,7 +101,7 @@ func unregister(i int) {
 //export go_event_callback
 func go_event_callback(obj *C.struct__lv_obj_t, event C.lv_event_t) {
 	o := (*LVObj)(obj)
-	eud := pointer.Restore(unsafe.Pointer(o.UserData())).(EventUserData)
+	eud := pointer.Restore(unsafe.Pointer(o.UserData())).(*EventUserData)
 	fn := lookup(eud.idx)
 	fn(o, (LVEvent)(event))
 }
