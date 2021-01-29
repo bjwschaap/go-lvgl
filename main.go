@@ -58,7 +58,7 @@ func main() {
 	lvgl.RefreshNow()
 
 	// Give goroutines some time to cleanup/finish
-	time.Sleep(1 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	log.Info("exit")
 	os.Exit(0)
