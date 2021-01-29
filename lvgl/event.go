@@ -29,6 +29,8 @@ import (
 	"fmt"
 	"sync"
 	"unsafe"
+
+	"github.com/mattn/go-pointer"
 )
 
 const (
@@ -99,7 +101,7 @@ func unregister(i int) {
 //export go_event_callback
 func go_event_callback(obj *C.struct__lv_obj_t, event C.lv_event_t) {
 	o := (*LVObj)(obj)
-	eud := (*EventUserData)(o.UserData())
+	eud := pointer.Restore(unsafe.Pointer(o.UserData())).(EventUserData)
 	fn := lookup(eud.idx)
 	fn(o, (LVEvent)(event))
 }
@@ -112,7 +114,7 @@ func MyCallback(obj *LVObj, event LVEvent) {
 // TryCallback is a test function
 func (obj *LVObj) TryCallback() {
 	i := register(MyCallback)
-	obj.SetUserData((unsafe.Pointer)(&EventUserData{idx: i}))
+	obj.SetUserData(pointer.Save((unsafe.Pointer)(&EventUserData{idx: i})))
 	C._register_callback(((*C.struct__lv_obj_t)(unsafe.Pointer(obj))))
 	unregister(i)
 }
