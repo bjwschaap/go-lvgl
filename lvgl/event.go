@@ -60,7 +60,7 @@ const (
 
 // EventUserData represents event info to inject into lv_obj as user_data
 type EventUserData struct {
-	idx int
+	IDX int
 }
 
 // EventCallbackFn is the callback function prototype
@@ -102,7 +102,8 @@ func unregister(i int) {
 func go_event_callback(obj *C.struct__lv_obj_t, event C.lv_event_t) {
 	o := (*LVObj)(obj)
 	eud := pointer.Restore(unsafe.Pointer(o.UserData())).(*EventUserData)
-	fn := lookup(eud.idx)
+	fmt.Printf("IDX Restore: %d\n", eud.IDX)
+	fn := lookup(eud.IDX)
 	fn(o, (LVEvent)(event))
 }
 
@@ -114,7 +115,8 @@ func MyCallback(obj *LVObj, event LVEvent) {
 // TryCallback is a test function
 func (obj *LVObj) TryCallback() {
 	i := register(MyCallback)
-	obj.SetUserData(pointer.Save(&EventUserData{idx: i}))
+	fmt.Printf("IDX Save: %d\n", i)
+	obj.SetUserData(pointer.Save(&EventUserData{IDX: i}))
 	C._register_callback(((*C.struct__lv_obj_t)(unsafe.Pointer(obj))))
 	unregister(i)
 }
