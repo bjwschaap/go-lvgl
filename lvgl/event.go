@@ -69,38 +69,45 @@ type EventCallbackFn func(*LVObj, LVEvent)
 // LVEvent represents lv_event_t
 type LVEvent C.lv_event_t
 
-var (
+// EventFnRegister contains a map of all event callbacks
+type EventFnRegister struct {
 	mu    sync.Mutex
 	index int
-	fns   = make(map[int]EventCallbackFn)
-)
+	fns   map[int]EventCallbackFn
+}
+
+var callbackRegister EventFnRegister
+
+func init() {
+	callbackRegister.fns = make(map[int]EventCallbackFn)
+}
 
 func register(fn EventCallbackFn) int {
-	mu.Lock()
-	defer mu.Unlock()
-	index++
-	for fns[index] != nil {
-		index++
+	callbackRegister.mu.Lock()
+	defer callbackRegister.mu.Unlock()
+	callbackRegister.index++
+	for callbackRegister.fns[callbackRegister.index] != nil {
+		callbackRegister.index++
 	}
-	fns[index] = fn
-	return index
+	callbackRegister.fns[callbackRegister.index] = fn
+	return callbackRegister.index
 }
 
 func lookup(i int) EventCallbackFn {
-	mu.Lock()
-	defer mu.Unlock()
-	return fns[i]
+	callbackRegister.mu.Lock()
+	defer callbackRegister.mu.Unlock()
+	return callbackRegister.fns[i]
 }
 
 func unregister(i int) {
-	mu.Lock()
-	defer mu.Unlock()
-	delete(fns, i)
+	callbackRegister.mu.Lock()
+	defer callbackRegister.mu.Unlock()
+	delete(callbackRegister.fns, i)
 }
 
 //export go_event_callback
 func go_event_callback(obj *C.struct__lv_obj_t, event C.lv_event_t) {
-	fmt.Printf("fns: %v+\n", fns)
+	fmt.Printf("fns: %v+\n", callbackRegister.fns)
 	o := (*LVObj)(obj)
 	eud := pointer.Restore(unsafe.Pointer(o.UserData())).(*EventUserData)
 	fn := lookup(eud.IDX)
@@ -119,7 +126,7 @@ func MyCallback(obj *LVObj, event LVEvent) {
 // TryCallback is a test function
 func (obj *LVObj) TryCallback() {
 	i := register(MyCallback)
-	fmt.Printf("fns: %v+\n", fns)
+	fmt.Printf("fns: %v+\n", callbackRegister.fns)
 	obj.SetUserData(pointer.Save(&EventUserData{IDX: i}))
 	C._register_callback(((*C.struct__lv_obj_t)(unsafe.Pointer(obj))))
 	unregister(i)
