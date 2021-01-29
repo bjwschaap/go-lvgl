@@ -11,11 +11,16 @@ package lvgl
   #cgo LDFLAGS: -L../include -llvgl
 
   // Go function prototype
-  extern void go_callback_int(int foo, int p1);
+  extern void go_event_callback(lv_obj_t * obj, lv_event_t event);
 
   // callback 'proxy'
-  static inline void CallMyFunction(int foo) {
-	go_callback_int(foo, 5);
+  static inline void event_cb_proxy(lv_obj_t * obj, lv_event_t event) {
+	go_event_callback(obj, event);
+  }
+
+  // Callback registration
+  static void _register_callback(lv_obj_t *obj) {
+	  lv_obj_set_event_cb(obj, event_cb_proxy);
   }
 
 */
@@ -23,6 +28,7 @@ import "C"
 import (
 	"fmt"
 	"sync"
+	"unsafe"
 )
 
 const (
@@ -61,17 +67,13 @@ type EventCallbackFn func(*LVObj, LVEvent)
 // LVEvent represents lv_event_t
 type LVEvent C.lv_event_t
 
-// Callback contains a datastructure to share with C code
-type Callback struct {
-	Func   EventCallbackFn
-	Object *LVObj
-}
+var (
+	mu    sync.Mutex
+	index int
+	fns   = make(map[int]EventCallbackFn)
+)
 
-var mu sync.Mutex
-var index int
-var fns = make(map[int]func(C.int))
-
-func register(fn func(C.int)) int {
+func register(fn EventCallbackFn) int {
 	mu.Lock()
 	defer mu.Unlock()
 	index++
@@ -82,7 +84,7 @@ func register(fn func(C.int)) int {
 	return index
 }
 
-func lookup(i int) func(C.int) {
+func lookup(i int) EventCallbackFn {
 	mu.Lock()
 	defer mu.Unlock()
 	return fns[i]
@@ -94,18 +96,23 @@ func unregister(i int) {
 	delete(fns, i)
 }
 
-//export go_callback_int
-func go_callback_int(foo C.int, p1 C.int) {
-	fn := lookup(int(foo))
-	fn(p1)
+//export go_event_callback
+func go_event_callback(obj *C.struct__lv_obj_t, event C.lv_event_t) {
+	o := (*LVObj)(obj)
+	eud := (*EventUserData)(o.UserData())
+	fn := lookup(eud.idx)
+	fn(o, (LVEvent)(event))
 }
 
-func MyCallback(x C.int) {
-	fmt.Println("callback with", x)
+// MyCallback is a test callback function
+func MyCallback(obj *LVObj, event LVEvent) {
+	fmt.Printf("Received event: %v\n", event)
 }
 
+// TryCallback is a test function
 func (obj *LVObj) TryCallback() {
 	i := register(MyCallback)
-	C.CallMyFunction(C.int(i))
+	obj.SetUserData((unsafe.Pointer)(&EventUserData{idx: i}))
+	C._register_callback(((*C.struct__lv_obj_t)(unsafe.Pointer(obj))))
 	unregister(i)
 }
