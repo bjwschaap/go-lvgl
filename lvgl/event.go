@@ -109,22 +109,16 @@ func (r eventFnRegister) unregister(i int) {
 
 //export go_event_callback
 func go_event_callback(obj *C.struct__lv_obj_t, event C.lv_event_t) {
-	fmt.Printf("In Callback: fns = %v+\n", callbackRegister.fns)
 	o := (*LVObj)(obj)
 	eud := pointer.Restore(unsafe.Pointer(o.UserData())).(*EventUserData)
 	fn := callbackRegister.lookup(eud.IDX)
+	fmt.Printf("fn: %v+\n", fn)
 	fn(o, (LVEvent)(event))
 }
 
-// MyCallback is a test callback function
-func MyCallback(obj *LVObj, event LVEvent) {
-	fmt.Printf("Received event: %v\n", event)
-}
-
-// TryCallback is a test function
-func (obj *LVObj) TryCallback() {
-	i := callbackRegister.register(MyCallback)
+// RegisterEventCallback registers an Event handler function for a lv_object
+func (obj *LVObj) RegisterEventCallback(fn EventCallbackFn) {
+	i := callbackRegister.register(fn)
 	obj.SetUserData(pointer.Save(&EventUserData{IDX: i}))
 	C._register_callback(((*C.struct__lv_obj_t)(unsafe.Pointer(obj))))
-	fmt.Printf("After register: fns = %v+\n", callbackRegister.fns)
 }

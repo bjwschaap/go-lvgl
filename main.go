@@ -82,6 +82,9 @@ func createScreen() {
 	t2 := tv.AddTab("Visuals")
 	t3 := tv.AddTab("Selectors")
 
+	// Register event handler
+	t1.RegisterEventCallback(MyCallback)
+
 	// Add some labels to the tab pages
 	lbl1 := lvgl.Label(t1, nil)
 	lbl1.SetText("This is tab 1")
@@ -89,6 +92,9 @@ func createScreen() {
 	lbl2.SetText("This is tab 2")
 	lbl3 := lvgl.Label(t3, nil)
 	lbl3.SetText("This is tab 3")
+}
 
-	lbl3.TryCallback()
+// MyCallback is a test callback function
+func MyCallback(obj *lvgl.LVObj, event lvgl.LVEvent) {
+	log.WithField("event", event).Debug("Received event")
 }
