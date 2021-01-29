@@ -90,4 +90,5 @@ func createScreen() {
 	lbl3 := lvgl.Label(t3, nil)
 	lbl3.SetText("This is tab 3")
 
+	lbl3.TryCallback()
 }

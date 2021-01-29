@@ -40,6 +40,9 @@ type LVObj C.struct__lv_obj_t
 // LVDisplay is the display type
 type LVDisplay C.struct__disp_t
 
+// LVUserData represents lv_obj user data
+type LVUserData C.lv_obj_user_data_t
+
 // GetChild helps to iterate through the children of an object
 func GetChild(obj, child *LVObj) *LVObj {
 	var p1, p2 *C.struct__lv_obj_t
@@ -72,4 +75,15 @@ func GetDisplaySizeCategory(disp *LVDisplay) uint8 {
 // Clean resets/clears an lv_obj back to init state
 func (obj *LVObj) Clean() {
 	C.lv_obj_clean((*C.struct__lv_obj_t)(unsafe.Pointer(obj)))
+}
+
+// UserData returns the lv_obj's user data
+func (obj *LVObj) UserData() LVUserData {
+	u := C.lv_obj_get_user_data((*C.struct__lv_obj_t)(unsafe.Pointer(obj)))
+	return LVUserData(u)
+}
+
+// SetUserData sets the user data on a lv_obj
+func (obj *LVObj) SetUserData(u unsafe.Pointer) {
+	C.lv_obj_set_user_data((*C.struct__lv_obj_t)(unsafe.Pointer(obj)), (C.lv_obj_user_data_t)(u))
 }

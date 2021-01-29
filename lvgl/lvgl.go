@@ -18,7 +18,8 @@ package lvgl
   static lv_color_t lvbuf1[LV_BUF_SIZE];
   static lv_color_t lvbuf2[LV_BUF_SIZE];
 
-  void init(){
+  void init()
+  {
 	// LVGL init
 	lv_init();
 
@@ -44,12 +45,14 @@ package lvgl
 	lv_indev_drv_register(&indev_drv);
   }
 
-  void handle_tick(uint32_t t) {
+  void handle_tick(uint32_t t)
+  {
 	lv_tick_inc(t);
 	lv_task_handler();
   }
 
-  void refresh_now(void) {
+  void refresh_now(void)
+  {
 	  lv_refr_now(disp);
   }
 
