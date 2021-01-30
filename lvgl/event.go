@@ -81,7 +81,14 @@ var (
 )
 
 func init() {
-	cbReg.fns = make(map[int]EventCallbackFn)
+	cbReg = newEventCBReg()
+}
+
+// initializes a new event callback register
+func newEventCBReg() *eventCBRegister {
+	return &eventCBRegister{
+		fns: make(map[int]EventCallbackFn),
+	}
 }
 
 func (r *eventCBRegister) register(fn EventCallbackFn) int {
