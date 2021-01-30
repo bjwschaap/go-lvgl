@@ -92,9 +92,29 @@ func createScreen() {
 	lbl2.SetText("This is tab 2")
 	lbl3 := lvgl.Label(t3, nil)
 	lbl3.SetText("This is tab 3")
+
+	// Dummy callback for testing
+	lbl3.RegisterEventCallback(MyOtherCallback)
 }
 
 // MyCallback is a test callback function
 func MyCallback(obj *lvgl.LVObj, event lvgl.LVEvent) {
-	log.WithField("event", event).Debug("Received event")
+	log.WithField("event", event).Debug("MyCallback received event")
+	switch event {
+	case lvgl.EventValueChanged:
+		log.Debug("Value changed event")
+	case lvgl.EventDelete:
+		log.Debug("Object deleted event")
+	}
+}
+
+// MyOtherCallback is a test callback function
+func MyOtherCallback(obj *lvgl.LVObj, event lvgl.LVEvent) {
+	log.WithField("event", event).Debug("MyOtherCallback received event")
+	switch event {
+	case lvgl.EventValueChanged:
+		log.Debug("Value changed event")
+	case lvgl.EventDelete:
+		log.Debug("Object deleted event")
+	}
 }
