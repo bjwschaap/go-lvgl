@@ -83,7 +83,7 @@ func createScreen() {
 	t3 := tv.AddTab("Selectors")
 
 	// Register event handler
-	t1.RegisterEventCallback(MyCallback)
+	tv.RegisterEventCallback(MyCallback)
 
 	// Add some labels to the tab pages
 	lbl1 := lvgl.Label(t1, nil)

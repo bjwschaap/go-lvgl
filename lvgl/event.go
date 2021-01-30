@@ -70,38 +70,38 @@ type EventCallbackFn func(*LVObj, LVEvent)
 type LVEvent C.lv_event_t
 
 // EventFnRegister contains a map of all event callbacks
-type eventFnRegister struct {
+type eventCBRegister struct {
 	sync.Mutex
 	index int
 	fns   map[int]EventCallbackFn
 }
 
 var (
-	callbackRegister eventFnRegister
+	cbReg *eventCBRegister
 )
 
 func init() {
-	callbackRegister.fns = make(map[int]EventCallbackFn)
+	cbReg.fns = make(map[int]EventCallbackFn)
 }
 
-func (r eventFnRegister) register(fn EventCallbackFn) int {
+func (r *eventCBRegister) register(fn EventCallbackFn) int {
 	r.Lock()
 	defer r.Unlock()
 	r.index++
-	for r.fns[callbackRegister.index] != nil {
+	for r.fns[r.index] != nil {
 		r.index++
 	}
-	r.fns[callbackRegister.index] = fn
+	r.fns[r.index] = fn
 	return r.index
 }
 
-func (r eventFnRegister) lookup(i int) EventCallbackFn {
+func (r *eventCBRegister) lookup(i int) EventCallbackFn {
 	r.Lock()
 	defer r.Unlock()
 	return r.fns[i]
 }
 
-func (r eventFnRegister) unregister(i int) {
+func (r *eventCBRegister) unregister(i int) {
 	r.Lock()
 	defer r.Unlock()
 	delete(r.fns, i)
@@ -111,14 +111,14 @@ func (r eventFnRegister) unregister(i int) {
 func go_event_callback(obj *C.struct__lv_obj_t, event C.lv_event_t) {
 	o := (*LVObj)(obj)
 	eud := pointer.Restore(unsafe.Pointer(o.UserData())).(*EventUserData)
-	fn := callbackRegister.lookup(eud.IDX)
+	fn := cbReg.lookup(eud.IDX)
 	fmt.Printf("fn: %v+\n", fn)
 	fn(o, (LVEvent)(event))
 }
 
 // RegisterEventCallback registers an Event handler function for a lv_object
 func (obj *LVObj) RegisterEventCallback(fn EventCallbackFn) {
-	i := callbackRegister.register(fn)
+	i := cbReg.register(fn)
 	obj.SetUserData(pointer.Save(&EventUserData{IDX: i}))
 	C._register_callback(((*C.struct__lv_obj_t)(unsafe.Pointer(obj))))
 }
