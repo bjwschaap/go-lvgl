@@ -140,5 +140,5 @@ func (obj *LVObj) UnRegisterEventCallback(fn EventCallbackFn) {
 	o := (*LVObj)(obj)
 	eud := pointer.Restore(unsafe.Pointer(o.UserData())).(*EventUserData)
 	cbReg.remove(eud.IDX)
-	C._register_callback(((*C.struct__lv_obj_t)(unsafe.Pointer(obj))))
+	C._register_callback((*C.struct__lv_obj_t)(unsafe.Pointer(obj)))
 }

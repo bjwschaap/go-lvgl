@@ -57,7 +57,7 @@ func main() {
 	scr.Clean()
 	lvgl.RefreshNow()
 
-	// Give goroutines some time to cleanup/finish
+	// Give lvgl and goroutines some time to cleanup/finish
 	time.Sleep(2 * time.Second)
 
 	log.Info("exit")
@@ -77,13 +77,13 @@ func createScreen() {
 	// Make a tabview bar
 	tv := scr.Tabview(nil)
 
+	// Register event handler
+	tv.RegisterEventCallback(MyCallback)
+
 	// Add 3 tabs (+pages) to the tabview
 	t1 := tv.AddTab("Controls")
 	t2 := tv.AddTab("Visuals")
 	t3 := tv.AddTab("Selectors")
-
-	// Register event handler
-	tv.RegisterEventCallback(MyCallback)
 
 	// Add some labels to the tab pages
 	lbl1 := lvgl.Label(t1, nil)
@@ -92,25 +92,11 @@ func createScreen() {
 	lbl2.SetText("This is tab 2")
 	lbl3 := lvgl.Label(t3, nil)
 	lbl3.SetText("This is tab 3")
-
-	// Dummy callback for testing
-	lbl3.RegisterEventCallback(MyOtherCallback)
 }
 
 // MyCallback is a test callback function
 func MyCallback(obj *lvgl.LVObj, event lvgl.LVEvent) {
 	log.WithField("event", event).Debug("MyCallback received event")
-	switch event {
-	case lvgl.EventValueChanged:
-		log.Debug("Value changed event")
-	case lvgl.EventDelete:
-		log.Debug("Object deleted event")
-	}
-}
-
-// MyOtherCallback is a test callback function
-func MyOtherCallback(obj *lvgl.LVObj, event lvgl.LVEvent) {
-	log.WithField("event", event).Debug("MyOtherCallback received event")
 	switch event {
 	case lvgl.EventValueChanged:
 		log.Debug("Value changed event")
