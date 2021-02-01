@@ -16,15 +16,15 @@ import (
 	"unsafe"
 )
 
-// Label returns a new Label object
+// LabelCreate returns a new Label object
 // @param scr is the screen to put the label on
 // @param copy is another label to copy the styling from
 // @return the created label object
-func Label(scr, copy *LVObj) *LVObj {
-	p1 := (*C.struct__lv_obj_t)(unsafe.Pointer(scr))
-	p2 := (*C.struct__lv_obj_t)(unsafe.Pointer(copy))
+func (obj *LVObj) LabelCreate(copy *LVObj) *LVObj {
+	scr := (*C.struct__lv_obj_t)(unsafe.Pointer(obj))
+	cp := (*C.struct__lv_obj_t)(unsafe.Pointer(copy))
 
-	label := C.lv_label_create(p1, p2)
+	label := C.lv_label_create(scr, cp)
 	return (*LVObj)(unsafe.Pointer(label))
 }
 

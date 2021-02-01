@@ -86,11 +86,11 @@ func createScreen() {
 	t3 := tv.AddTab("Selectors")
 
 	// Add some labels to the tab pages
-	lbl1 := lvgl.Label(t1, nil)
+	lbl1 := t1.LabelCreate(nil)
 	lbl1.SetText("This is tab 1")
-	lbl2 := lvgl.Label(t2, nil)
+	lbl2 := t2.LabelCreate(nil)
 	lbl2.SetText("This is tab 2")
-	lbl3 := lvgl.Label(t3, nil)
+	lbl3 := t3.LabelCreate(nil)
 	lbl3.SetText("This is tab 3")
 }
 
