@@ -22,3 +22,6 @@ obj/
 
 # compiled SO and .a
 include/liblvgl.*
+
+# generated Go sources
+**/*_gen.go

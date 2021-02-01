@@ -14,6 +14,8 @@ package lvgl
 import "C"
 import "unsafe"
 
+//go:generate go run gen.go
+
 const (
 	StyleRadius     LVStyleProperty = C.LV_STYLE_RADIUS
 	StyleClipCorner LVStyleProperty = C.LV_STYLE_CLIP_CORNER

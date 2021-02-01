@@ -25,4 +25,7 @@ clean-lvgl:
 
 clean-all: clean clean-lvgl
 
-.PHONY: build clean init lvgl clean-lvgl clean-all
+generate:
+	cd lvgl; ${GOCMD} generate
+
+.PHONY: build clean init lvgl clean-lvgl clean-all generate
