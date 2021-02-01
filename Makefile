@@ -8,6 +8,7 @@ build:
 
 clean:
 	${GOCLEAN}
+	rm -f ./lvgl/*_gen.go
 
 init:
 	git submodule init

@@ -136,6 +136,24 @@ type LVStyleProperty C.lv_style_property_t
 // LVStyleList represents lv_style_list_t
 type LVStyleList C.struct__lv_style_list_t
 
+// LVOpacity represents lv_opa_t
+type LVOpacity C.lv_opa_t
+
+// LVBlendMode represents lv_blend_mode_t
+type LVBlendMode C.lv_blend_mode_t
+
+// LVGradient represents lv_grad_dir_t
+type LVGradient C.lv_grad_dir_t
+
+// LVBorderSide represents lv_border_side_t
+type LVBorderSide C.lv_border_side_t
+
+// LVFont represents lv_font_t
+type LVFont C.struct__lv_font_t
+
+// LVTextDecor represents lv_text_decor_t
+type LVTextDecor C.lv_text_decor_t
+
 // Init initializes a new lv_style_t object
 func (style *LVStyle) Init() {
 	s := (*C.struct___7)(unsafe.Pointer(style))

@@ -27,3 +27,6 @@ const (
 
 // LVLoadScreenAnimation represents the lv_scr_load_anim_t type
 type LVLoadScreenAnimation C.lv_scr_load_anim_t
+
+// LVAnimationPath represents lv_anim_path_t
+type LVAnimationPath C.struct__lv_anim_path_t
