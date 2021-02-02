@@ -149,7 +149,7 @@ type LVGradient C.lv_grad_dir_t
 type LVBorderSide C.lv_border_side_t
 
 // LVFont represents lv_font_t
-type LVFont C.struct__lv_font_t
+type LVFont C.struct__lv_font_struct
 
 // LVTextDecor represents lv_text_decor_t
 type LVTextDecor C.lv_text_decor_t
@@ -190,10 +190,10 @@ func (style *LVStyle) Reset() {
 }
 
 // SetBgColor sets the backgroundcolor property on a style, for a specific state
-func (style *LVStyle) SetBgColor(state LVState, color LVColor) {
-	s := (*C.struct___7)(unsafe.Pointer(style))
-	C.lv_style_set_bg_color(s, C.uchar(state), C.lv_color_t(color))
-}
+// func (style *LVStyle) SetBgColor(state LVState, color LVColor) {
+// 	s := (*C.struct___7)(unsafe.Pointer(style))
+// 	C.lv_style_set_bg_color(s, C.uchar(state), C.lv_color_t(color))
+// }
 
 // AddStyle adds a style to a LVObj
 func (obj *LVObj) AddStyle(part uint8, style *LVStyle) {
