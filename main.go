@@ -87,7 +87,7 @@ func createScreen() {
 
 	// Style tabpages
 	tstyle.Init()
-	tstyle.SetBgColor(lvgl.StateDefault, lvgl.ColorGray)
+	tstyle.SetBgColor(lvgl.StateDefault, lvgl.ColorBlue)
 	tstyle.SetPadInner(lvgl.StateDefault, 5)
 	t1.AddStyle(lvgl.PagePartBG, &tstyle)
 
