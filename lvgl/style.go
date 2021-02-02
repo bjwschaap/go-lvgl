@@ -189,12 +189,6 @@ func (style *LVStyle) Reset() {
 	C.lv_style_reset(s)
 }
 
-// SetBgColor sets the backgroundcolor property on a style, for a specific state
-// func (style *LVStyle) SetBgColor(state LVState, color LVColor) {
-// 	s := (*C.struct___7)(unsafe.Pointer(style))
-// 	C.lv_style_set_bg_color(s, C.uchar(state), C.lv_color_t(color))
-// }
-
 // AddStyle adds a style to a LVObj
 func (obj *LVObj) AddStyle(part uint8, style *LVStyle) {
 	s := (*C.struct___7)(unsafe.Pointer(style))

@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	style lvgl.LVStyle
-	scr   *lvgl.LVObj
+	tstyle, style lvgl.LVStyle
+	scr           *lvgl.LVObj
 	// tv, t1, t2, t3 *lvgl.LVObj
 	// lbl1, lbl2, lbl3    *lvgl.LVObj
 )
@@ -84,6 +84,12 @@ func createScreen() {
 	t1 := tv.AddTab("Controls")
 	t2 := tv.AddTab("Visuals")
 	t3 := tv.AddTab("Selectors")
+
+	// Style tabpages
+	tstyle.Init()
+	tstyle.SetBgColor(lvgl.StateDefault, lvgl.ColorGray)
+	tstyle.SetPadInner(lvgl.StateDefault, 5)
+	t1.AddStyle(lvgl.PagePartBG, &tstyle)
 
 	// Add some labels to the tab pages
 	lbl1 := t1.LabelCreate(nil)
