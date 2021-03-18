@@ -12,10 +12,7 @@ import (
 )
 
 var (
-	style, tstyle  lvgl.LVStyle
-	scr            *lvgl.LVObj
-	tv, t1, t2, t3 *lvgl.LVObj
-	// lbl1, lbl2, lbl3    *lvgl.LVObj
+	style, tstyle *lvgl.LVStyle
 )
 
 func init() {
@@ -33,7 +30,7 @@ func main() {
 
 	// Handle OS interrupts
 	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt, os.Kill, syscall.SIGTERM, syscall.SIGHUP)
+	signal.Notify(interrupt, os.Interrupt, os.Interrupt, syscall.SIGTERM, syscall.SIGHUP)
 
 	// Create a context for cancellation
 	ctx := context.Background()
@@ -41,19 +38,20 @@ func main() {
 
 	// Make the GUI
 	log.Debug("construct GUI")
-	createScreen()
+	scr := createScreen()
 
 	// Start LVGL's task handler
 	log.Debug("starting lvgl taskhandler")
 	lvgl.StartTaskHandler(ctx)
 
-	select {
-	case s := <-interrupt:
-		log.WithField("signal", s.String()).Info("received OS interrupt")
-		cancel()
-	}
+	// This will block until interrupt
+	s := <-interrupt
+	log.WithField("signal", s.String()).Info("received OS interrupt")
 
-	// Clear the display
+	// Notify background processes through/with context
+	cancel()
+
+	// Clear the screen/display
 	scr.Clean()
 	lvgl.RefreshNow()
 
@@ -65,31 +63,31 @@ func main() {
 }
 
 // createScreen assembles the GUI through LVGL API
-func createScreen() {
+func createScreen() *lvgl.LVObj {
 
 	// Make a Black active screen. so when we clear it
 	// it will be a 'blank' screen
 	style.Init()
 	style.SetBgColor(lvgl.StateDefault, lvgl.ColorBlack)
-	scr = lvgl.GetActiveScreen()
-	scr.AddStyle(lvgl.ObjMaskPartMain, &style)
+	scr := lvgl.GetActiveScreen()
+	scr.AddStyle(lvgl.ObjMaskPartMain, style)
 
 	// Make a tabview bar
-	tv = scr.Tabview(nil)
+	tv := scr.Tabview(nil)
 
-	// Register event handler
+	// Register event handler on the tabview
 	tv.RegisterEventCallback(MyCallback)
 
 	// Add 3 tabs (+pages) to the tabview
-	t1 = tv.AddTab("Controls")
-	t2 = tv.AddTab("Visuals")
-	t3 = tv.AddTab("Selectors")
+	t1 := tv.AddTab("Controls")
+	t2 := tv.AddTab("Visuals")
+	t3 := tv.AddTab("Selectors")
 
 	// Style tabpages
 	tstyle.Init()
 	tstyle.SetBgColor(lvgl.StateDefault, lvgl.ColorBlue)
 	tstyle.SetPadInner(lvgl.StateDefault, 5)
-	t1.AddStyle(lvgl.PagePartBG, &tstyle)
+	t1.AddStyle(lvgl.PagePartBG, tstyle)
 
 	// Add some labels to the tab pages
 	lbl1 := t1.LabelCreate(nil)
@@ -98,6 +96,8 @@ func createScreen() {
 	lbl2.SetText("This is tab 2")
 	lbl3 := t3.LabelCreate(nil)
 	lbl3.SetText("This is tab 3")
+
+	return scr
 }
 
 // MyCallback is a test callback function
